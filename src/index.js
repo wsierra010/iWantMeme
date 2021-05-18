@@ -2,8 +2,13 @@ const express = require('express');
 const morgan = require('morgan');
 const expresshbs = require('express-handlebars');
 const path = require('path');
+const passport = require('passport');
+// const session = require("express-session");
+// const MySQLStore = require('express-mysql-session');
+// const { database } = require('./keys');
 
 const app = express();
+require('./lib/passport');
 
 app.set('port', process.env.PORT || 4000);
 app.set("views", path.join(__dirname, "views"));
@@ -19,9 +24,17 @@ app.engine(
 );
 app.set('view engine', 'hbs');
 
+// app.use(session({
+//     secret: 'mememysqlnodesession',
+//     resave: false,
+//     saveUninitialized: false,
+//     store: new MySQLStore(database)
+// }));
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Global variables
 app.use((req, res, next) => {
