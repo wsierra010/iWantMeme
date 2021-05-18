@@ -12,3 +12,13 @@ CREATE TABLE users (
 );
 
 DESCRIBE users;
+
+
+CREATE TABLE memePhoto (
+  title VARCHAR(150) NOT NULL,
+  imageURL VARCHAR(255) NOT NULL,
+  user_id INT(11),
+  CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES users(id)
+);
+
+DESCRIBE links;
