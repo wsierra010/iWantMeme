@@ -3,9 +3,7 @@ const morgan = require('morgan');
 const expresshbs = require('express-handlebars');
 const path = require('path');
 const passport = require('passport');
-// const session = require("express-session");
-// const MySQLStore = require('express-mysql-session');
-// const { database } = require('./keys');
+const multer = require('multer');
 
 const app = express();
 require('./lib/passport');
@@ -24,12 +22,6 @@ app.engine(
 );
 app.set('view engine', 'hbs');
 
-// app.use(session({
-//     secret: 'mememysqlnodesession',
-//     resave: false,
-//     saveUninitialized: false,
-//     store: new MySQLStore(database)
-// }));
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
