@@ -1,7 +1,6 @@
 const express = require('express');
 const pool = require('../database');
 const cloudinary = require('cloudinary').v2;
-const { Result } = require('express-validator');
 const { isLoggedIn } = require('../lib/auth');
 
 const router = express.Router();
@@ -14,7 +13,6 @@ const fs = require('fs-extra');
 
 router.get('/', isLoggedIn, async (req, res, next) => {
     const images = await pool.query('SELECT * FROM memePhoto');
-    console.log(images);
     res.render('images', {images});
 });
 
@@ -35,7 +33,7 @@ router.post('/memes/upload', async (req, res, next) => {
             description,
             public_id: public_id,
         };
-        const response = await pool.query('INSERT INTO memePhoto SET ?', [newMeme]);
+        await pool.query('INSERT INTO memePhoto SET ?', [newMeme]);
         req.flash('success', 'Meme saved successfully');
         res.redirect('/');
 
