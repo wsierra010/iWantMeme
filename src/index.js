@@ -6,6 +6,12 @@ const passport = require('passport');
 const multer = require('multer');
 require('dotenv').config();
 
+const flash = require('connect-flash');
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session');
+const { database } = require('./keys')
+
+
 
 const app = express();
 require('./lib/passport');
@@ -24,6 +30,13 @@ app.engine(
 );
 app.set('view engine', 'hbs');
 
+app.use(session({
+    secret: 'Eres un máquina',
+    resave: false,
+    saveUninitialized: false,
+    store: new MySQLStore(database)
+}));
+app.use(flash());
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -37,18 +50,20 @@ app.use(multer({storage}).single('image'));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Global variables
-app.use((req, res, next) => {
 
+
+app.use((req, res, next) => {
+    app.locals.success = req.flash('success');
+    app.locals.user = req.user;
     next();
 });
-// Routes
+
 app.use(require('./routes/index'));
 app.use(require('./routes/auth'));
 
-// Public
+
 app.use(express.static(path.join(__dirname, 'public')));
-// Starting the server
+
 app.listen(app.get("port"), () => {
     console.log("Server is in port", app.get("port"));
 });
